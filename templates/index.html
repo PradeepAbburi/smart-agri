@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Yield Prediction | Agricultural Data Analysis</title>
+    <meta name="description" content="Predict crop yield using regression models with environmental and agricultural factors like rainfall, temperature, and fertilizer usage.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">
+                <span class="logo-icon">🌾</span>
+                <span class="logo-text">Crop<span class="logo-accent">Yield</span></span>
+            </a>
+            <div class="nav-links">
+                <a href="#hero" class="nav-link active" data-section="hero">Home</a>
+                <a href="#dashboard" class="nav-link" data-section="dashboard">Dashboard</a>
+                <a href="#explore" class="nav-link" data-section="explore">Explore</a>
+                <a href="#models" class="nav-link" data-section="models">Models</a>
+                <a href="#predict" class="nav-link" data-section="predict">Predict</a>
+            </div>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                Predict <span class="gradient-text">Crop Yield</span> with Precision
+            </h1>
+            <p class="hero-subtitle">
+                Analyzing agricultural data and building regression models to forecast crop output using environmental factors like rainfall, temperature, and soil nutrients.
+            </p>
+            <div class="hero-actions">
+                <a href="#predict" class="btn btn-primary">
+                    <span>Start Predicting</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+                <a href="#explore" class="btn btn-secondary">Explore Data</a>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="hero-stat-value" id="stat-samples">--</span>
+                    <span class="hero-stat-label">Data Points</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-value" id="stat-features">6</span>
+                    <span class="hero-stat-label">Features</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-value" id="stat-r2">--</span>
+                    <span class="hero-stat-label">Best R² Score</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-value">2</span>
+                    <span class="hero-stat-label">Regression Models</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section class="section" id="dashboard">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">📊 Overview</span>
+                <h2 class="section-title">Data <span class="gradient-text">Dashboard</span></h2>
+                <p class="section-subtitle">Quick overview of the crop yield dataset with key statistics and distributions</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid" id="statsGrid">
+                <!-- Populated by JS -->
+            </div>
+
+            <!-- Data Table -->
+            <div class="card glass-card">
+                <div class="card-header">
+                    <h3 class="card-title">📋 Dataset Preview</h3>
+                    <span class="card-badge">First 10 rows</span>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table" id="dataTable">
+                        <!-- Populated by JS -->
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Explore Section -->
+    <section class="section section-alt" id="explore">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">🔍 Analysis</span>
+                <h2 class="section-title">Exploratory <span class="gradient-text">Data Analysis</span></h2>
+                <p class="section-subtitle">Interactive visualizations revealing patterns and relationships in the agricultural data</p>
+            </div>
+
+            <!-- Distribution Charts -->
+            <div class="chart-tabs">
+                <button class="chart-tab active" data-chart="distributions">Distributions</button>
+                <button class="chart-tab" data-chart="scatter">Relationships</button>
+                <button class="chart-tab" data-chart="correlation">Correlation</button>
+            </div>
+
+            <div class="chart-panel active" id="panel-distributions">
+                <div class="charts-grid">
+                    <div class="chart-card glass-card">
+                        <h4 class="chart-title">🌧️ Rainfall Distribution</h4>
+                        <canvas id="chartRainfall"></canvas>
+                    </div>
+                    <div class="chart-card glass-card">
+                        <h4 class="chart-title">🌡️ Temperature Distribution</h4>
+                        <canvas id="chartTemperature"></canvas>
+                    </div>
+                    <div class="chart-card glass-card">
+                        <h4 class="chart-title">🧪 Fertilizer Distribution</h4>
+                        <canvas id="chartFertilizer"></canvas>
+                    </div>
+                    <div class="chart-card glass-card">
+                        <h4 class="chart-title">🌿 Yield Distribution</h4>
+                        <canvas id="chartYield"></canvas>
+                    </div>
+                </div>
+                <div class="insight-card glass-card">
+                    <div class="insight-icon">💡</div>
+                    <div class="insight-text">
+                        <strong>Key Insight:</strong> The bimodal distributions in rainfall, temperature, and yield suggest the dataset contains data from <strong>two distinct crops</strong> — likely Rabi and Kharif season crops with different environmental requirements.
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-panel" id="panel-scatter">
+                <div class="charts-grid">
+                    <div class="chart-card glass-card">
+                        <h4 class="chart-title">🌧️ Rainfall vs Yield</h4>
+                        <canvas id="chartScatterRain"></canvas>
+                    </div>
+                    <div class="chart-card glass-card">
+                        <h4 class="chart-title">🌡️ Temperature vs Yield</h4>
+                        <canvas id="chartScatterTemp"></canvas>
+                    </div>
+                    <div class="chart-card glass-card chart-card-wide">
+                        <h4 class="chart-title">🧪 Fertilizer vs Yield</h4>
+                        <canvas id="chartScatterFert"></canvas>
+                    </div>
+                </div>
+                <div class="insight-card glass-card">
+                    <div class="insight-icon">💡</div>
+                    <div class="insight-text">
+                        <strong>Key Insight:</strong> Two distinct clusters are visible in rainfall and temperature scatter plots, confirming the presence of two crop types. Temperature shows the strongest correlation with yield.
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-panel" id="panel-correlation">
+                <div class="chart-card glass-card chart-card-full">
+                    <h4 class="chart-title">🔗 Feature Correlation Heatmap</h4>
+                    <canvas id="chartCorrelation"></canvas>
+                </div>
+                <div class="insight-card glass-card">
+                    <div class="insight-icon">💡</div>
+                    <div class="insight-text">
+                        <strong>Key Insight:</strong> Temperature has the highest correlation with crop yield, followed by rainfall. Macronutrients show moderate positive correlation with yield.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Models Section -->
+    <section class="section" id="models">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">📈 Regression Models</span>
+                <h2 class="section-title">Model <span class="gradient-text">Performance</span></h2>
+                <p class="section-subtitle">Comparing Decision Tree and Random Forest regressors with hyperparameter tuning via GridSearchCV</p>
+            </div>
+
+            <div class="models-grid">
+                <!-- Decision Tree Card -->
+                <div class="model-card glass-card">
+                    <div class="model-header">
+                        <div class="model-icon">🌳</div>
+                        <div>
+                            <h3 class="model-name">Decision Tree</h3>
+                            <span class="model-type">Regressor</span>
+                        </div>
+                    </div>
+                    <div class="model-metrics">
+                        <div class="metric">
+                            <span class="metric-label">R² Score</span>
+                            <span class="metric-value" id="dt-r2">--</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">MAE</span>
+                            <span class="metric-value" id="dt-mae">--</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">MSE</span>
+                            <span class="metric-value" id="dt-mse">--</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Train Score</span>
+                            <span class="metric-value" id="dt-train">--</span>
+                        </div>
+                    </div>
+                    <canvas id="chartDTPredictions"></canvas>
+                </div>
+
+                <!-- Random Forest Card -->
+                <div class="model-card glass-card model-card-best">
+                    <div class="best-badge">⭐ Best Model</div>
+                    <div class="model-header">
+                        <div class="model-icon">🌲</div>
+                        <div>
+                            <h3 class="model-name">Random Forest</h3>
+                            <span class="model-type">Regressor</span>
+                        </div>
+                    </div>
+                    <div class="model-metrics">
+                        <div class="metric">
+                            <span class="metric-label">R² Score</span>
+                            <span class="metric-value highlight" id="rf-r2">--</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">MAE</span>
+                            <span class="metric-value" id="rf-mae">--</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">MSE</span>
+                            <span class="metric-value" id="rf-mse">--</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Train Score</span>
+                            <span class="metric-value" id="rf-train">--</span>
+                        </div>
+                    </div>
+                    <canvas id="chartRFPredictions"></canvas>
+                </div>
+            </div>
+
+            <!-- Feature Importance -->
+            <div class="card glass-card" style="margin-top: 2rem;">
+                <div class="card-header">
+                    <h3 class="card-title">📊 Feature Importance Comparison</h3>
+                </div>
+                <div class="feature-chart-container">
+                    <canvas id="chartFeatureImportance"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Prediction Section -->
+    <section class="section section-alt" id="predict">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-badge">🎯 Predict</span>
+                <h2 class="section-title">Yield <span class="gradient-text">Predictor</span></h2>
+                <p class="section-subtitle">Enter environmental and agricultural parameters to get estimated crop yield predictions</p>
+            </div>
+
+            <div class="predict-layout">
+                <div class="predict-form-card glass-card">
+                    <form id="predictForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="rainfall">
+                                    <span class="form-icon">🌧️</span>
+                                    Rainfall (mm)
+                                </label>
+                                <input type="number" id="rainfall" name="rainfall" step="0.1" placeholder="e.g. 450" required>
+                                <span class="form-hint">Range: 200 - 1500 mm</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="temperature">
+                                    <span class="form-icon">🌡️</span>
+                                    Temperature (°C)
+                                </label>
+                                <input type="number" id="temperature" name="temperature" step="0.1" placeholder="e.g. 28" required>
+                                <span class="form-hint">Range: 20 - 45 °C</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="fertilizer">
+                                    <span class="form-icon">🧪</span>
+                                    Fertilizer (kg)
+                                </label>
+                                <input type="number" id="fertilizer" name="fertilizer" step="0.1" placeholder="e.g. 55" required>
+                                <span class="form-hint">Range: 10 - 120 kg</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="nitrogen">
+                                    <span class="form-icon">🟢</span>
+                                    Nitrogen (N)
+                                </label>
+                                <input type="number" id="nitrogen" name="nitrogen" step="0.1" placeholder="e.g. 60" required>
+                                <span class="form-hint">Macro nutrient level</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="phosphorus">
+                                    <span class="form-icon">🟠</span>
+                                    Phosphorus (P)
+                                </label>
+                                <input type="number" id="phosphorus" name="phosphorus" step="0.1" placeholder="e.g. 45" required>
+                                <span class="form-hint">Macro nutrient level</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="potassium">
+                                    <span class="form-icon">🟣</span>
+                                    Potassium (K)
+                                </label>
+                                <input type="number" id="potassium" name="potassium" step="0.1" placeholder="e.g. 200" required>
+                                <span class="form-hint">Macro nutrient level</span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full" id="predictBtn">
+                            <span>🌾 Predict Crop Yield</span>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="predict-result-card glass-card" id="resultCard">
+                    <div class="result-placeholder" id="resultPlaceholder">
+                        <div class="result-placeholder-icon">🌱</div>
+                        <p>Enter parameters and click predict to see estimated yield results</p>
+                    </div>
+                    <div class="result-content hidden" id="resultContent">
+                        <div class="result-main">
+                            <span class="result-label">Predicted Yield</span>
+                            <span class="result-value" id="resultValue">--</span>
+                            <span class="result-unit">Quintals / acre</span>
+                        </div>
+                        <div class="result-comparison">
+                            <div class="result-model">
+                                <span class="result-model-name">🌳 Decision Tree</span>
+                                <span class="result-model-value" id="resultDT">--</span>
+                            </div>
+                            <div class="result-model result-model-best">
+                                <span class="result-model-name">🌲 Random Forest ⭐</span>
+                                <span class="result-model-value" id="resultRF">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <span class="footer-logo">🌾 Crop<span class="logo-accent">Yield</span></span>
+                <p>Crop Yield Prediction — Data Science Project</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
