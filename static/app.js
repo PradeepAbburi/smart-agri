@@ -3,8 +3,8 @@
    ============================================ */
 
 // Chart.js Global Defaults
-Chart.defaults.color = '#94a3b8';
-Chart.defaults.borderColor = 'rgba(255,255,255,0.05)';
+Chart.defaults.color = '#1a1a1a';
+Chart.defaults.borderColor = 'rgba(0,0,0,0.08)';
 Chart.defaults.font.family = "'Inter', sans-serif";
 Chart.defaults.plugins.legend.labels.usePointStyle = true;
 Chart.defaults.plugins.legend.labels.padding = 15;
@@ -244,7 +244,7 @@ function createDistributionCharts(chartData) {
                         ticks: { maxTicksLimit: 8, font: { size: 10 } }
                     },
                     y: {
-                        grid: { color: 'rgba(255,255,255,0.03)' },
+                        grid: { color: 'rgba(0,0,0,0.08)' },
                         ticks: { font: { size: 10 } }
                     }
                 }
@@ -295,12 +295,12 @@ function createScatterCharts(chartData) {
                 },
                 scales: {
                     x: {
-                        title: { display: true, text: cfg.labelX, color: '#94a3b8' },
-                        grid: { color: 'rgba(255,255,255,0.03)' }
+                        title: { display: true, text: cfg.labelX, color: '#1a1a1a' },
+                        grid: { color: 'rgba(0,0,0,0.08)' }
                     },
                     y: {
-                        title: { display: true, text: 'Yield (Q/acre)', color: '#94a3b8' },
-                        grid: { color: 'rgba(255,255,255,0.03)' }
+                        title: { display: true, text: 'Yield (Q/acre)', color: '#1a1a1a' },
+                        grid: { color: 'rgba(0,0,0,0.08)' }
                     }
                 }
             }
@@ -469,8 +469,8 @@ function createPredictionCharts(metrics) {
                         display: false
                     },
                     y: {
-                        grid: { color: 'rgba(255,255,255,0.03)' },
-                        title: { display: true, text: 'Yield (Q/acre)', color: '#64748b' }
+                        grid: { color: 'rgba(0,0,0,0.08)' },
+                        title: { display: true, text: 'Yield (Q/acre)', color: '#1a1a1a' }
                     }
                 }
             }
@@ -533,8 +533,8 @@ function createFeatureImportanceChart(features) {
             },
             scales: {
                 x: {
-                    grid: { color: 'rgba(255,255,255,0.03)' },
-                    title: { display: true, text: 'Importance', color: '#64748b' },
+                    grid: { color: 'rgba(0,0,0,0.08)' },
+                    title: { display: true, text: 'Importance', color: '#1a1a1a' },
                     ticks: {
                         callback: val => (val * 100).toFixed(0) + '%'
                     }
