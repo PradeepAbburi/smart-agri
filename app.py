@@ -1,6 +1,6 @@
 """
-Crop Yield Prediction - Flask Web Application
-A beautiful interactive web app for predicting crop yield based on environmental factors.
+Smart Agricultural Intelligence Platform - Flask Web Application
+Using Machine Learning for Crop Yield Prediction and Farm Advisory
 """
 
 from flask import Flask, render_template, request, jsonify
@@ -99,13 +99,13 @@ def train_models(df):
 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    # Decision Tree Regressor
-    dtr = DecisionTreeRegressor(max_depth=4, min_samples_leaf=2, min_samples_split=8, random_state=0)
+    # Optimized Decision Tree Regressor (improved depth and split criteria)
+    dtr = DecisionTreeRegressor(max_depth=15, min_samples_leaf=1, min_samples_split=3, random_state=0)
     dtr.fit(X_train, y_train)
     d_pred = dtr.predict(X_test)
 
-    # Random Forest Regressor
-    rfr = RandomForestRegressor(max_depth=4, min_samples_leaf=2, min_samples_split=6, n_estimators=100, random_state=42)
+    # Optimized Random Forest Regressor (increased estimators and depth)
+    rfr = RandomForestRegressor(max_depth=16, min_samples_leaf=1, min_samples_split=3, n_estimators=300, random_state=42)
     rfr.fit(X_train, y_train)
     r_pred = rfr.predict(X_test)
 
@@ -116,6 +116,7 @@ def train_models(df):
     model_metrics = {
         'decision_tree': {
             'mse': round(mean_squared_error(y_test, d_pred), 4),
+            'rmse': round(np.sqrt(mean_squared_error(y_test, d_pred)), 4),
             'mae': round(mean_absolute_error(y_test, d_pred), 4),
             'r2': round(r2_score(y_test, d_pred), 4),
             'train_score': round(dtr.score(X_train, y_train), 4),
@@ -124,6 +125,7 @@ def train_models(df):
         },
         'random_forest': {
             'mse': round(mean_squared_error(y_test, r_pred), 4),
+            'rmse': round(np.sqrt(mean_squared_error(y_test, r_pred)), 4),
             'mae': round(mean_absolute_error(y_test, r_pred), 4),
             'r2': round(r2_score(y_test, r_pred), 4),
             'train_score': round(rfr.score(X_train, y_train), 4),
@@ -192,11 +194,21 @@ def predict():
         dt_prediction = dtr_model.predict(features)[0]
         rf_prediction = rfr_model.predict(features)[0]
 
+        # Calculate standard deviation of predictions from all estimators in the forest
+        tree_preds = [tree.predict(features)[0] for tree in rfr_model.estimators_]
+        std_dev = np.std(tree_preds)
+        mean_pred = np.mean(tree_preds)
+        
+        # Calculate a realistic confidence score (between 50% and 99% based on coefficient of variation)
+        cv = std_dev / mean_pred if mean_pred > 0 else 0
+        confidence = round(max(50.0, min(99.0, 100.0 - (cv * 100.0))), 2)
+
         return jsonify({
             'success': True,
             'decision_tree': round(float(dt_prediction), 2),
             'random_forest': round(float(rf_prediction), 2),
             'recommended': round(float(rf_prediction), 2),
+            'confidence': confidence,
             'unit': 'Quintals/acre'
         })
     except Exception as e:
